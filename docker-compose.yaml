@@ -1,12 +1,14 @@
 version: "3.9"
 services:
     bot:
-        build:
-            context: ./app
-            dockerfile: Dockerfile
-        stop_signal: SIGINT
+        build:  .
+        container_name: "bot"
+        ports:
+            - "8000:8000"
         restart: "always"
-        env_file:
-            - .env
+        stop_signal: SIGINT
+        volumes:
+            # Путь к .env файлу с настройками
+            - "./.env:/app/.env"
 
 

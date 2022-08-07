@@ -50,7 +50,11 @@ async def on_message(message: types.Message):
 async def save_screenchot(message: types.Message) -> PageDetail:
     started_at = time()
     logger.info(f"URL: {message.text} from user: {message.from_user.id}")
-    browser = await launch(headless=True, args=['--no-sandbox'])
+    browser = await launch(
+        executablePath="/usr/bin/google-chrome-stable",
+        headless=True,
+        args=["--no-sandbox"],
+    )
     page = await browser.newPage()
     url = validate_protocol(message.text)
 
