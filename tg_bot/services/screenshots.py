@@ -1,13 +1,14 @@
-import asyncio
 import dataclasses
 import logging
+from datetime import datetime
+from pathlib import Path
 from time import time
-from typing import Union
 from urllib.parse import urlparse
 
 from aiogram import types
 from pyppeteer import launch
-from pyppeteer.errors import NetworkError
+
+import consts
 
 logger = logging.getLogger(__name__)
 
@@ -15,9 +16,15 @@ logger = logging.getLogger(__name__)
 @dataclasses.dataclass
 class PageDetail:
     url: str
-    screenshot: Union[bytes, str]
+    screenshot_path: Path
     title: str
-    calculation_time_sec: int
+    calculation_time_sec: float
+
+
+def get_file_path(root_dir: Path, message_date: datetime, user_id, url) -> Path:
+    domain = urlparse(url).netloc
+    file_name = f"{consts.MEDIA_DIR_NAME}{message_date:%Y_%m_%d_%H_%M_%S}_{user_id}_{domain}.png"
+    return root_dir / file_name
 
 
 async def save_screenchot(message: types.Message) -> PageDetail:
@@ -30,24 +37,23 @@ async def save_screenchot(message: types.Message) -> PageDetail:
     page = await browser.newPage()
     url = message.text
 
-    domain = urlparse(url).netloc
-
     await page.goto(url, waitUntil="networkidle2")
 
     title = await page.title()
-    path = f"{message.date:%Y_%m_%d}_{message.from_user.id}_{domain}.png"
+    path = get_file_path(message.bot["root_dir"], message.date, message.from_user.id, url)
     await page.setViewport({"width": 1920, "height": 1080})
-    screenshot = await asyncio.wait_for(page.screenshot({
+    await page.screenshot({
+        "path": path,
         "type": "jpeg",
         "quality": 100,
         "width": 1920,
         "height": 1080,
-    }), timeout=30.0)
+    })
     await browser.close()
 
     return PageDetail(
         url=url,
-        screenshot=screenshot,
+        screenshot_path=path,
         title=title,
         calculation_time_sec=time() - started_at
     )

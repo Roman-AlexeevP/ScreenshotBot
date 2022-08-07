@@ -20,6 +20,7 @@ async def main():
 
     storage = MemoryStorage()
     bot = Bot(token=config.tg_bot.token)
+    bot["root_dir"] = config.tg_bot.root_dir
     dp = Dispatcher(bot, storage=storage)
 
     users_handler.register_user(dp)
