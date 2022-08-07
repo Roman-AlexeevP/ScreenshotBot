@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+    bot:
+        build:
+            context: ./app
+            dockerfile: Dockerfile
+        stop_signal: SIGINT
+        restart: "always"
+        env_file:
+            - .env
+
+
