@@ -1,14 +1,11 @@
-version: "3.9"
+version: "3.0"
 services:
     bot:
-        build:  .
+        build: .
         container_name: "bot"
-        ports:
-            - "8000:8000"
-        restart: "always"
-        stop_signal: SIGINT
-        volumes:
-            # Путь к .env файлу с настройками
-            - "./.env:/app/.env"
+        command: [ "python", "-m","tg_bot" ]
+        restart: on-failure
 
+        volumes:
+            - .:/app
 

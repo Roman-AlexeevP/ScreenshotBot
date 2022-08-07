@@ -26,10 +26,10 @@ class PageDetail:
 
 async def user_start(message: types.Message):
     logger.info(f"User {message.from_user.id} start work with bot")
-    message = "Привет! Меня зовут ImagerClone. Я - Бот для создания веб-скриншотов." \
+    message_text = "Привет! Меня зовут ImagerClone. Я - Бот для создания веб-скриншотов." \
               "\nЧтобы получить скриншот - отправьте URL адрес сайта. Например, wikipedia.org"
 
-    await message.reply(message)
+    await message.reply(message_text)
 
 
 async def on_message(message: types.Message):

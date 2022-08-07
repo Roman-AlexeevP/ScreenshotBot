@@ -1,12 +1,14 @@
-# Отдельный сборочный образ
-FROM python:3.9-slim as compile-image
+# python image
+FROM python:3.9-slim
+
+# set working directory
+WORKDIR /app
+
+# set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-RUN python -m venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
 
-
-# Хром и зависимости
+# chrome for pyppeteer
 RUN apt-get update && apt-get install -y \
     apt-transport-https \
     ca-certificates \
@@ -19,21 +21,18 @@ RUN apt-get update && apt-get install -y \
     google-chrome-stable \
     --no-install-recommends
 RUN groupadd chrome && useradd -g chrome -s /bin/bash -G audio,video chrome \
-    && mkdir -p /home/chrome && chown -R chrome:chrome /home/chrome
+    && mkdir -p /home/chrome && chown -R chrome:chrome /home/chrome \
 
+# python dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip \
- && pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
+# copy app
+COPY . .
 
-# Итоговый образ, в котором будет работать бот
-FROM  python:3.9-slim
-
-COPY --from=compile-image /opt/venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
-WORKDIR /app
-COPY tg_bot /app/tg_bot
+# python path
 ENV PYTHONPATH /app/tg_bot
 
-RUN echo "pizdos"
-CMD ["python", "-m", "tg_bot"]
+
+# start app
+CMD ["python", "-m","tg_bot"]
