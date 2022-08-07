@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y \
     google-chrome-stable \
     --no-install-recommends
 RUN groupadd chrome && useradd -g chrome -s /bin/bash -G audio,video chrome \
-    && mkdir -p /home/chrome && chown -R chrome:chrome /home/chrome \
+    && mkdir -p /home/chrome && chown -R chrome:chrome /home/chrome
 
 # python dependencies
 COPY requirements.txt .
