@@ -1,7 +1,7 @@
 import consts
 
 
-def validate_url(url: str) -> str:
+def validate_protocol(url: str) -> str:
     """
     Check protocol for right work of page.goto() method
     """

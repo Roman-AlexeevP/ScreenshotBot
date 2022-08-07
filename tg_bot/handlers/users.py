@@ -1,9 +1,9 @@
 import asyncio
 import dataclasses
 import logging
+from time import time
 from typing import Union
 from urllib.parse import urlparse
-from time import time
 
 import aiogram.utils.markdown as fmt
 from aiogram import Dispatcher
@@ -11,7 +11,7 @@ from aiogram import types
 from pyppeteer import launch
 from pyppeteer.errors import NetworkError
 
-from validators.validate import validate_url
+from validators.urls import validate_protocol
 
 logger = logging.getLogger(__name__)
 
@@ -50,9 +50,9 @@ async def on_message(message: types.Message):
 async def save_screenchot(message: types.Message) -> PageDetail:
     started_at = time()
     logger.info(f"URL: {message.text} from user: {message.from_user.id}")
-    browser = await launch()
+    browser = await launch(headless=True, args=['--no-sandbox'])
     page = await browser.newPage()
-    url = validate_url(message.text)
+    url = validate_protocol(message.text)
 
     domain = urlparse(url).netloc
     try:
