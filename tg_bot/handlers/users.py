@@ -1,27 +1,16 @@
-import asyncio
-import dataclasses
 import logging
-from time import time
-from typing import Union
-from urllib.parse import urlparse
 
 import aiogram.utils.markdown as fmt
 from aiogram import Dispatcher
 from aiogram import types
-from pyppeteer import launch
-from pyppeteer.errors import NetworkError
 
-from validators.urls import validate_protocol
+from services.screenshots import save_screenchot
+from tg_bot.validators import urls
 
 logger = logging.getLogger(__name__)
 
 
-@dataclasses.dataclass
-class PageDetail:
-    url: str
-    screenshot: Union[bytes, str]
-    title: str
-    calculation_time_sec: int
+
 
 
 async def user_start(message: types.Message):
@@ -33,6 +22,12 @@ async def user_start(message: types.Message):
 
 
 async def on_message(message: types.Message):
+    logger.info(f"URL: {message.text} from user: {message.from_user.id}")
+    is_url_correct = await urls.check_url_status(message.text)
+    if not is_url_correct:
+        logger.warning(f"Wrong URL:{message.text} from user: {message.from_user.id}")
+        return await message.reply("Неправильная ссылка или формат. Попробуйте еще раз, пример ссылки:"
+                                   r"https://github.com", disable_web_page_preview=True)
     temporary_message = await message.reply(fmt.bold("Запрос отправлен на сайт"))
     page_detail = await save_screenchot(message=message)
     text = fmt.text(
@@ -46,42 +41,6 @@ async def on_message(message: types.Message):
                                caption=text,
                                parse_mode=types.ParseMode.HTML)
 
-
-async def save_screenchot(message: types.Message) -> PageDetail:
-    started_at = time()
-    logger.info(f"URL: {message.text} from user: {message.from_user.id}")
-    browser = await launch(
-        executablePath="/usr/bin/google-chrome-stable",
-        headless=True,
-        args=["--no-sandbox"],
-    )
-    page = await browser.newPage()
-    url = validate_protocol(message.text)
-
-    domain = urlparse(url).netloc
-    try:
-        await page.goto(url, waitUntil="networkidle2")
-    except NetworkError as exc:
-        logger.exception(exc)
-        await message.answer("Неверная ссылка, попробуйте еще раз")
-    else:
-        title = await page.title()
-        path = f"{message.date:%Y_%m_%d}_{message.from_user.id}_{domain}.png"
-        await page.setViewport({"width": 1920, "height": 1080})
-        screenshot = await asyncio.wait_for(page.screenshot({
-            "type": "jpeg",
-            "quality": 100,
-            "width": 1920,
-            "height": 1080,
-        }), timeout=30.0)
-        await browser.close()
-
-        return PageDetail(
-            url=url,
-            screenshot=screenshot,
-            title=title,
-            calculation_time_sec=time() - started_at
-        )
 
 
 def register_user(dp: Dispatcher):

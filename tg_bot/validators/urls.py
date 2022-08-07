@@ -1,10 +1,18 @@
+import aiohttp
+
 import consts
 
 
-def validate_protocol(url: str) -> str:
+async def check_url_status(url: str) -> bool:
     """
-    Check protocol for right work of page.goto() method
+    Check url response code
+    Good response codes: 2xx, 3xx
     """
-    if not url.startswith(consts.PROTOCOL_HTTP) and not url.startswith(consts.PROTOCOL_HTTPS):
-        url = consts.PROTOCOL_HTTP + url
-    return url
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.get(url) as response:
+                status = response.status
+        except (aiohttp.InvalidURL, aiohttp.ClientConnectorError):
+            return False
+        else:
+            return status in consts.VALIDE_RESPONSE_STASUSES
