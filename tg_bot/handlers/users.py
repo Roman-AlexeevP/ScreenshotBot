@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 async def user_start(message: types.Message):
     logger.info(f"User {message.from_user.id} start work with bot")
     message_text = "Привет! Меня зовут ImagerClone. Я - Бот для создания веб-скриншотов." \
-                   "\nЧтобы получить скриншот - отправьте URL адрес сайта. Например, wikipedia.org"
+                   "\n\nЧтобы получить скриншот - отправьте URL адрес сайта. \n\nKНапример, http://wikipedia.org"
 
     await message.reply(message_text)
 
