@@ -5,7 +5,16 @@ services:
         container_name: "bot"
         command: [ "python", "-m","tg_bot" ]
         restart: on-failure
-
         volumes:
             - .:/app
-
+        depends_on:
+            - redis
+    redis:
+        image: redis:7
+        restart: on-failure
+        volumes:
+            # Путь к каталогу с redis.conf
+            - "/Users/lebelius/Coding/ScreenshotBot/redis_config:/usr/local/etc/redis"
+            # Путь к каталогу, где будет лежать дамп базы Redis
+            - "/Users/lebelius/Coding/ScreenshotBot/redis_config:/data"
+        command: "redis-server /usr/local/etc/redis/redis.conf"
