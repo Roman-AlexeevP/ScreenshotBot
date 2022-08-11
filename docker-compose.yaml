@@ -9,6 +9,7 @@ services:
             - .:/app
         depends_on:
             - redis
+            - db
     redis:
         image: redis:7
         restart: on-failure
@@ -18,3 +19,11 @@ services:
             # Путь к каталогу, где будет лежать дамп базы Redis
             - "/Users/lebelius/Coding/ScreenshotBot/redis_config:/data"
         command: "redis-server /usr/local/etc/redis/redis.conf"
+    db:
+        image: postgres:13-alpine
+        restart: "unless-stopped"
+        environment:
+            POSTGRES_PASSWORD: ${SUPERUSER_PASSWORD}
+        volumes:
+            - "/Users/lebelius/Coding/ScreenshotBot/pg/data:/var/lib/postgresql/data"
+            - "/Users/lebelius/Coding/ScreenshotBot/pg/init:/docker-entrypoint-initdb.d"
