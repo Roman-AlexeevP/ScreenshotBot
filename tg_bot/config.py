@@ -12,11 +12,14 @@ class TgBot:
     redis: str
     fsm_mod: str = "in_memory"
 
+@dataclass
+class Postgres:
+    postgres_dsn: str
 
 @dataclass
 class Config:
     tg_bot: TgBot
-
+    postgres: Postgres
 
 def load_config():
     config = dotenv.dotenv_values()
@@ -27,4 +30,7 @@ def load_config():
             root_dir=pathlib.Path(__file__).parent.parent,
             fsm_mod=config.get("FSM_MOD"),
             redis=config.get("REDIS")),
+        postgres=Postgres(
+            postgres_dsn=config.get("POSTGRES_DSN")
+        )
     )

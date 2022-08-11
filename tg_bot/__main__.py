@@ -4,6 +4,8 @@ import logging
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.contrib.fsm_storage.redis import RedisStorage
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.orm import sessionmaker
 
 from tg_bot.config import load_config
 from tg_bot.handlers import users as users_handler
@@ -19,6 +21,13 @@ async def main():
     logger.info("Starting bot")
     config = load_config()
 
+    # Creating DB engine for PostgreSQL
+    engine = create_async_engine(config.postgres.postgres_dsn, future=True, echo=False)
+
+    # Creating DB connections pool
+    db_pool = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
+
+    # Storage init
     if config.tg_bot.fsm_mod == "redis":
         storage = RedisStorage.from_url(
             url=config.tg_bot.redis,
