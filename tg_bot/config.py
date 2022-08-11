@@ -14,7 +14,10 @@ class TgBot:
 
 @dataclass
 class Postgres:
-    postgres_dsn: str
+    db_host: str
+    db_name: str
+    db_user: str
+    db_pass: str
 
 @dataclass
 class Config:
@@ -31,6 +34,9 @@ def load_config():
             fsm_mod=config.get("FSM_MOD"),
             redis=config.get("REDIS")),
         postgres=Postgres(
-            postgres_dsn=config.get("POSTGRES_DSN")
+            db_host=config.get("DB_HOST"),
+            db_user=config.get("DB_USER"),
+            db_pass=config.get("DB_PASS"),
+            db_name=config.get("DB_NAME"),
         )
     )

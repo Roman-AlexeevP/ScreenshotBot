@@ -15,15 +15,16 @@ services:
         restart: on-failure
         volumes:
             # Путь к каталогу с redis.conf
-            - "/Users/lebelius/Coding/ScreenshotBot/redis_config:/usr/local/etc/redis"
+            - "./redis_config:/usr/local/etc/redis"
             # Путь к каталогу, где будет лежать дамп базы Redis
-            - "/Users/lebelius/Coding/ScreenshotBot/redis_config:/data"
+            - "./redis_config:/data"
         command: "redis-server /usr/local/etc/redis/redis.conf"
     db:
-        image: postgres:13-alpine
+        image: postgres:14
         restart: "unless-stopped"
         environment:
-            POSTGRES_PASSWORD: ${SUPERUSER_PASSWORD}
+            POSTGRES_USER: ${DB_USER}
+            POSTGRES_PASSWORD: ${DB_PASS}
+            POSTGRES_DB: ${DB_NAME}
         volumes:
-            - "/Users/lebelius/Coding/ScreenshotBot/pg/data:/var/lib/postgresql/data"
-            - "/Users/lebelius/Coding/ScreenshotBot/pg/init:/docker-entrypoint-initdb.d"
+            - "./pg/data:/var/lib/postgresql/data"
