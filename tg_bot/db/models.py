@@ -4,7 +4,7 @@ from tg_bot.db.base import Base
 
 
 class UserHistory(Base):
-    __tablename__ = "userhistory"
+    __tablename__ = "user_history"
 
     record_id = Column(Integer, primary_key=True)
     user_id = Column(Integer, nullable=False)

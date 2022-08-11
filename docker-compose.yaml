@@ -8,8 +8,9 @@ services:
         volumes:
             - .:/app
         depends_on:
-            - redis
             - db
+            - db_migration
+            - redis
     redis:
         image: redis:7
         restart: on-failure
@@ -28,3 +29,11 @@ services:
             POSTGRES_DB: ${DB_NAME}
         volumes:
             - "./pg/data:/var/lib/postgresql/data"
+    db_migration:
+        # You can override this tag using docker-compose.override.yml
+        build: .
+        restart: "on-failure"
+        depends_on:
+            - db
+        env_file: .env
+        command: sh -c "python -m alembic upgrade head"
