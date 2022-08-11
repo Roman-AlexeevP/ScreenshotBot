@@ -1,11 +1,13 @@
 from contextlib import suppress
 from datetime import datetime
+import logging
 
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.models import UserHistory
 
+logger = logging.getLogger(__file__)
 
 class UserHistoryManager:
 
@@ -25,6 +27,8 @@ class UserHistoryManager:
         entry.success = success
         entry.created_at = datetime.utcnow()
         self.session.add(entry)
+
+        logger.info(f"Action from user {user_id} saved to DB")
 
         # some kind of compromiss for quick requestsfrom users
         with suppress(IntegrityError):

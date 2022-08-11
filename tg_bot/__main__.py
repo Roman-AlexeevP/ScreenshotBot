@@ -15,6 +15,11 @@ from tg_bot.middlewares import db
 logger = logging.getLogger(__name__)
 
 
+async def create_tables(engine):
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+
 async def main():
     logging.basicConfig(
         level=logging.INFO,
@@ -26,13 +31,11 @@ async def main():
     # Creating DB engine for PostgreSQL
     psql_dsn = f"postgresql+asyncpg://{config.postgres.db_user}:{config.postgres.db_pass}" \
                f"@{config.postgres.db_host}/{config.postgres.db_name}"
-    engine = create_async_engine(psql_dsn, future=True, echo=False)
+    engine = create_async_engine(psql_dsn, echo=True)
+    await create_tables(engine)
 
     # Creating DB connections pool
     db_pool = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
-
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
 
     # Storage init
     if config.tg_bot.fsm_mod == "redis":
@@ -47,7 +50,7 @@ async def main():
     bot["root_dir"] = config.tg_bot.root_dir
     dp = Dispatcher(bot, storage=storage)
 
-    dp.middleware.setup(db.DbSessionMiddleware(db_pool))
+    dp.middleware.setup(db.DbMiddleware(db_pool))
 
     users_handler.register_user(dp)
 
