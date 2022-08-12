@@ -4,6 +4,7 @@ import pytest
 
 from tg_bot.services import whois
 
+
 @pytest.mark.asyncio
 async def test_wrong_url_query():
     wrong_url = "https://lki.r"
@@ -11,6 +12,7 @@ async def test_wrong_url_query():
     assert isinstance(whois_info, whois.WhoisInfo)
     assert not whois_info.status
     assert whois_info.query == wrong_url
+
 
 @pytest.mark.asyncio
 async def test_right_whois_url_query():

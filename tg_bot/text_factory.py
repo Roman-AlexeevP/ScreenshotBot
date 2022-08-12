@@ -45,6 +45,7 @@ def get_whois_text(whois_info: whois.WhoisInfo) -> str:
     )
     return text
 
+
 def get_wrong_url_text() -> str:
     text = fmt.text(
         fmt.text("Неправильная ссылка или формат. Попробуйте еще раз, пример ссылки:"),

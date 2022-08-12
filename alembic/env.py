@@ -1,11 +1,8 @@
 from logging.config import fileConfig
 
+from alembic import context
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
-
-from alembic import context
-
-from tg_bot.db.base import Base
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -26,14 +23,16 @@ if config.config_file_name is not None:
 # target_metadata = mymodel.Base.metadata
 from tg_bot.db.base import metadata
 from tg_bot.config import load_config
+
 target_metadata = metadata
 app_config = load_config()
 psql_dsn = f"postgresql+asyncpg://{app_config.postgres.db_user}:{app_config.postgres.db_pass}" \
-               f"@{app_config.postgres.db_host}/{app_config.postgres.db_name}"
+           f"@{app_config.postgres.db_host}/{app_config.postgres.db_name}"
 config.set_main_option(
     'sqlalchemy.url',
     psql_dsn + "?async_fallback=True"
 )
+
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

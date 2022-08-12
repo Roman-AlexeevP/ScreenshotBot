@@ -1,6 +1,6 @@
+import logging
 from contextlib import suppress
 from datetime import datetime
-import logging
 
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from db.models import UserHistory
 
 logger = logging.getLogger(__file__)
+
 
 class UserHistoryManager:
 

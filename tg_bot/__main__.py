@@ -7,7 +7,6 @@ from aiogram.contrib.fsm_storage.redis import RedisStorage
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 
-from db.base import Base
 from tg_bot.config import load_config
 from tg_bot.handlers import users as users_handler
 from tg_bot.middlewares import db

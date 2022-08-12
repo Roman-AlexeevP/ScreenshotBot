@@ -1,38 +1,38 @@
 version: "3.0"
 services:
-    bot:
-        build: .
-        container_name: "bot"
-        command: [ "python", "-m","tg_bot" ]
-        restart: on-failure
-        volumes:
-            - .:/app
-        depends_on:
-            - db
-            - db_migration
-            - redis
-    redis:
-        image: redis:7
-        restart: on-failure
-        volumes:
-            # Путь к каталогу с redis.conf
-            - "./redis_config:/usr/local/etc/redis"
-            # Путь к каталогу, где будет лежать дамп базы Redis
-            - "./redis_config:/data"
-        command: "redis-server /usr/local/etc/redis/redis.conf"
-    db:
-        image: postgres:14
-        restart: "unless-stopped"
-        environment:
-            POSTGRES_USER: ${DB_USER}
-            POSTGRES_PASSWORD: ${DB_PASS}
-            POSTGRES_DB: ${DB_NAME}
-        volumes:
-            - "./pg/data:/var/lib/postgresql/data"
-    db_migration:
-        build: .
-        restart: "on-failure"
-        depends_on:
-            - db
-        env_file: .env
-        command: sh -c "python -m alembic upgrade head"
+  bot:
+    build: .
+    container_name: "bot"
+    command: [ "python", "-m","tg_bot" ]
+    restart: on-failure
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - db_migration
+      - redis
+  redis:
+    image: redis:7
+    restart: on-failure
+    volumes:
+      # Путь к каталогу с redis.conf
+      - "./redis_config:/usr/local/etc/redis"
+      # Путь к каталогу, где будет лежать дамп базы Redis
+      - "./redis_config:/data"
+    command: "redis-server /usr/local/etc/redis/redis.conf"
+  db:
+    image: postgres:14
+    restart: "unless-stopped"
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - "./pg/data:/var/lib/postgresql/data"
+  db_migration:
+    build: .
+    restart: "on-failure"
+    depends_on:
+      - db
+    env_file: .env
+    command: sh -c "python -m alembic upgrade head"

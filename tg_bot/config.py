@@ -12,6 +12,7 @@ class TgBot:
     redis: str
     fsm_mod: str = "in_memory"
 
+
 @dataclass
 class Postgres:
     db_host: str
@@ -19,10 +20,12 @@ class Postgres:
     db_user: str
     db_pass: str
 
+
 @dataclass
 class Config:
     tg_bot: TgBot
     postgres: Postgres
+
 
 def load_config():
     config = dotenv.dotenv_values()

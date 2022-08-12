@@ -5,9 +5,8 @@ Revises:
 Create Date: 2022-08-11 22:30:31.704777
 
 """
-from alembic import op
 import sqlalchemy as sa
-
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = 'ffc49605a8ed'
@@ -26,7 +25,6 @@ def upgrade() -> None:
         sa.Column('success', sa.Boolean(), nullable=False),
         sa.PrimaryKeyConstraint('record_id')
     )
-
 
 
 def downgrade() -> None:

@@ -32,7 +32,8 @@ async def get_whois_response(url: str) -> WhoisInfo:
 
         except (aiohttp.InvalidURL, aiohttp.ClientConnectorError):
             logger.error(f"Error while connected to API {api_url} with url {url}")
-            return WhoisInfo(url=url, status=False, query=url, message="Ошибка в подключении к сервису по получению WHOIS")
+            return WhoisInfo(url=url, status=False, query=url,
+                             message="Ошибка в подключении к сервису по получению WHOIS")
         else:
             if whois_info_json.pop("status") == "fail":
                 return WhoisInfo(url=url, status=False, query=url,

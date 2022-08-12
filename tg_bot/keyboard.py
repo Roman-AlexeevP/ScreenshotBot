@@ -15,5 +15,3 @@ def whois_keybord_factory(url: str) -> types.InlineKeyboardMarkup:
     keyboard = types.InlineKeyboardMarkup()
     keyboard.add(whois_button)
     return keyboard
-
-

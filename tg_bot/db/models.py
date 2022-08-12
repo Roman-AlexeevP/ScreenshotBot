@@ -11,4 +11,3 @@ class UserHistory(Base):
     created_at = Column(DateTime, nullable=False)
     url = Column(String, nullable=False)
     success = Column(Boolean, nullable=False)
-
