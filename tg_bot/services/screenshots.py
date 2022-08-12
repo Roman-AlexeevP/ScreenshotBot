@@ -32,7 +32,12 @@ async def save_screenchot(message: types.Message) -> PageDetail:
     browser = await launch(
         executablePath="/usr/bin/google-chrome-stable",
         headless=True,
-        args=["--no-sandbox"],
+        ignoreHTTPSErrors=True,
+        args=["--no-sandbox",
+              '--ignore-certificate-errors',
+              '--ignore-certificate-errors-spki-list',
+              '--enable-features=NetworkService'
+              ],
     )
     page = await browser.newPage()
     url = message.text
